@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import jakarta.json.JsonObject;
 import sg.edu.nus.iss.paf_day22wsA.model.Rsvp;
 
 @Repository
@@ -48,11 +49,11 @@ public class RsvpRepo {
     }
 
 
-    public Optional<Rsvp> searchByName(String name) {
+    public Optional<Rsvp> searchByEmail(String searchPhrase) {
         
-        System.out.println("searching for " + name);
+        System.out.println("searching for " + searchPhrase);
 
-        SqlRowSet rs = template.queryForRowSet(Queries.SQL_SEARCH_BY_NAME, "%%%s%%".formatted(name));
+        SqlRowSet rs = template.queryForRowSet(Queries.SQL_SEARCH_BY_EMAIL, "%%%s%%".formatted(searchPhrase));
 
         if (!rs.next()){    // No rsvp found
             return Optional.empty();
@@ -64,12 +65,11 @@ public class RsvpRepo {
     }
 
 
-    public void insertOrUpdateRsvp(Rsvp rsvp){
+    public void insertOrUpdateRsvp(JsonObject rsvpJson){
         template.update(Queries.SQL_INSERT_OR_UPDATE,
-                        rsvp.getName(),
-                        rsvp.getEmail(),
-                        rsvp.getPhone(),
-                        rsvp.getConfirmationDate(),
-                        rsvp.getComments());
+                        rsvpJson.getString("email"),
+                        rsvpJson.getString("phone"),
+                        rsvpJson.getString("confirmDate"),
+                        rsvpJson.getString("comments").isEmpty() ? null : rsvpJson.getString("comments"));
     }
 }

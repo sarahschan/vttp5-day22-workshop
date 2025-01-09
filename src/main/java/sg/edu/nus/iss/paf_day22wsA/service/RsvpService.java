@@ -48,16 +48,13 @@ public class RsvpService {
     }
 
 
-    public Optional<Rsvp> searchByName(String name){
-        return rsvpRepo.searchByName(name);
+    public Optional<Rsvp> searchByEmail(String searchPhrase){
+        return rsvpRepo.searchByEmail(searchPhrase);
     }
 
 
     public void insertOrUpdateRsvp(JsonObject rsvpJson){
 
-        Rsvp newRsvp = new Rsvp();
-            newRsvp.setName(rsvpJson.getString(null));
-
-        rsvpRepo.insertOrUpdateRsvp(newRsvp);
+        rsvpRepo.insertOrUpdateRsvp(rsvpJson);
     }
 }

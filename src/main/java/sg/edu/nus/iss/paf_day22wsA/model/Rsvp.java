@@ -4,7 +4,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class Rsvp {
     
-    private String name;
     private String email;
     private String phone;
     private String confirmationDate;
@@ -18,7 +17,6 @@ public class Rsvp {
     public static Rsvp toRsvp(SqlRowSet rs){
 
         Rsvp rsvp = new Rsvp();
-            rsvp.setName(rs.getString("name"));
             rsvp.setEmail(rs.getString("email"));
             rsvp.setPhone(String.valueOf(rs.getInt("phone")));
             rsvp.setConfirmationDate(String.valueOf(rs.getDate("confirmation_date")));
@@ -27,21 +25,13 @@ public class Rsvp {
         return rsvp;
     }
 
-    
+
     @Override
     public String toString() {
-        return "Rsvp [name=" + name + ", email=" + email + ", phone=" + phone + ", confirmationDate=" + confirmationDate
-                + ", comments=" + comments + "]";
+        return "Rsvp [email=" + email + ", phone=" + phone + ", confirmationDate=" + confirmationDate + ", comments="
+                + comments + "]";
     }
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;

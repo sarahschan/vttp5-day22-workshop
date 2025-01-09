@@ -66,17 +66,17 @@ public class RsvpRestController {
 
 
     @GetMapping(path = "/rsvp", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> searchByName(@RequestParam(name = "q") String name){
+    public ResponseEntity<String> searchByEmail(@RequestParam(name = "q") String searchPhrase){
 
         HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
         
 
-        Optional<Rsvp> rsvpOpt = rsvpService.searchByName(name);
+        Optional<Rsvp> rsvpOpt = rsvpService.searchByEmail(searchPhrase);
 
         if (rsvpOpt.isEmpty()){         // No rsvp found
             JsonObject error = Json.createObjectBuilder()
-                .add("error", "No RSVP records found for query: " + name)
+                .add("error", "No RSVP records found for query: " + searchPhrase)
                 .build();
 
             return ResponseEntity.status(404).headers(headers).body(error.toString());
@@ -97,8 +97,20 @@ public class RsvpRestController {
         JsonReader jsonReader = Json.createReader(new StringReader(formEntry));
         JsonObject rsvpJson = jsonReader.readObject();
 
+        try {
+            
+            rsvpService.insertOrUpdateRsvp(rsvpJson);
 
-        return null;
+            return ResponseEntity.status(201).body(null);
+
+        } catch (Exception e){
+
+            System.out.println(e.getCause());
+            e.printStackTrace();
+
+            return ResponseEntity.status(500).body(null);
+        }
+
     }
 
 }

@@ -12,7 +12,6 @@ public class RsvpSerializer {
     public JsonObject toRsvpJsonObject(Rsvp rsvp){
         
         JsonObject rsvpJsonObject = Json.createObjectBuilder()
-            .add("name", rsvp.getName())
             .add("email", rsvp.getEmail())
             .add("phone", rsvp.getPhone())
             .add("confirmDate", rsvp.getConfirmationDate())
@@ -21,4 +20,5 @@ public class RsvpSerializer {
 
         return rsvpJsonObject;
     }
+
 }

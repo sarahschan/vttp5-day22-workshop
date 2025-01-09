@@ -10,7 +10,6 @@ use rsvp;
 -- create the table
 select "Creating RSVP table..." as msg;
 create table rsvp(
-    name varchar(128) not null,
     email varchar(128) not null,
     phone varchar(20) not null,
     confirmation_date date not null,
@@ -27,9 +26,9 @@ flush privileges;
 -- add some data
 select "Adding some data..." as msg;
 insert into rsvp
-        (name, email, phone, confirmation_date, comments)
+        (email, phone, confirmation_date, comments)
     values
-        ('Alice Johnson', 'alice.johnson@example.com', '94627481', '2024-01-10', 'Looking forward to it!'),
-        ('Bob Smith', 'bob.smith@example.com', '84759021', '2024-01-11', NULL),
-        ('Charlie Brown', 'charlie.brown@example.com', '93474312', '2024-01-12', 'Will be bringing a guest.'),
-        ('Diana Prince', 'diana.prince@example.com', '80153823', '2024-01-13', NULL);
+        ('alice.johnson@example.com', '94627481', '2024-01-10', 'Looking forward to it!'),
+        ('bob.smith@example.com', '84759021', '2024-01-11', NULL),
+        ('charlie.brown@example.com', '93474312', '2024-01-12', 'Will be bringing a guest.'),
+        ('diana.prince@example.com', '80153823', '2024-01-13', NULL);
