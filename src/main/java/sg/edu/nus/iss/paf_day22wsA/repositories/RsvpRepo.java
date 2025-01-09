@@ -51,8 +51,6 @@ public class RsvpRepo {
 
     public Optional<Rsvp> searchByEmail(String searchPhrase) {
         
-        System.out.println("searching for " + searchPhrase);
-
         SqlRowSet rs = template.queryForRowSet(Queries.SQL_SEARCH_BY_EMAIL, "%%%s%%".formatted(searchPhrase));
 
         if (!rs.next()){    // No rsvp found
@@ -71,5 +69,18 @@ public class RsvpRepo {
                         rsvpJson.getString("phone"),
                         rsvpJson.getString("confirmDate"),
                         rsvpJson.getString("comments").isEmpty() ? null : rsvpJson.getString("comments"));
+    }
+
+
+    public void editExistingRsvp(String existingEmail, Rsvp rsvp){
+        // delete the existing record
+        template.update(Queries.SQL_DELETE_BY_EMAIL, existingEmail);
+
+        // create the new record
+        template.update(Queries.SQL_INSERT_OR_UPDATE,
+                        rsvp.getEmail(),
+                        rsvp.getPhone(),
+                        rsvp.getConfirmationDate(),
+                        rsvp.getComments().isEmpty() ? null : rsvp.getComments());
     }
 }

@@ -1,7 +1,6 @@
 package sg.edu.nus.iss.paf_day22wsA.restcontroller;
 
 import java.io.StringReader;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -83,7 +85,6 @@ public class RsvpRestController {
         }
 
         Rsvp rsvp = rsvpOpt.get();      // Rsvp found
-        System.out.println(rsvp);
         JsonObject rsvpJson = rsvpSerializer.toRsvpJsonObject(rsvp);
 
         return ResponseEntity.status(200).headers(headers).body(rsvpJson.toString());
@@ -112,5 +113,59 @@ public class RsvpRestController {
         }
 
     }
+
+
+    @PutMapping(path = "/rsvp/{email}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> editExistingRsvp(@PathVariable String email, @RequestParam MultiValueMap<String, String> data){
+
+        try {
+                        
+            if (!rsvpService.rsvpExists(email)){
+                JsonObject notFound = Json.createObjectBuilder()
+                                        .add("forFoundMsg", "RSVP for email " + email + " not found")
+                                        .build();
+
+                return ResponseEntity.status(404).body(notFound.toString());
+            }
+
+        } catch (Exception e){
+
+            JsonObject errorMessage = Json.createObjectBuilder()
+                                        .add("errorMsg", "Error during lookup for existing RSVP")
+                                        .build();
+
+            return ResponseEntity.status(500).body(errorMessage.toString());
+        }
+
+
+        try {
+
+            Rsvp rsvp = new Rsvp();
+                rsvp.setEmail(data.getFirst("email"));
+                rsvp.setPhone(data.getFirst("phone"));
+                rsvp.setConfirmationDate(data.getFirst("confirmDate"));
+                rsvp.setComments(data.getFirst("comments"));
+
+            rsvpService.editExistingRsvp(email, rsvp);
+
+            JsonObject successMessage = Json.createObjectBuilder()
+                                            .add("successMsg", "RSVP for email " + email + " updated")
+                                            .build();
+
+            return ResponseEntity.status(201).body(successMessage.toString());
+
+        } catch (Exception e) {
+
+            System.out.println(e.getCause() + ": " + e.getStackTrace());
+
+            JsonObject errorMessage = Json.createObjectBuilder()
+                                        .add("errorMsg", "Error during update for existing RSVP")
+                                        .build();
+            
+            return ResponseEntity.status(500).body(errorMessage.toString());
+        }
+
+    }
+
 
 }

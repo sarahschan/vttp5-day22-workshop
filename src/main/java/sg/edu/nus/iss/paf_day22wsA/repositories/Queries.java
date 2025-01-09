@@ -33,4 +33,11 @@ public class Queries {
                 confirmation_date = new_rsvp.confirmation_date,
                 comments = new_rsvp.comments
         """;
+
+
+    public static final String SQL_DELETE_BY_EMAIL = 
+        """
+            delete from rsvp
+                where email = ?    
+        """;
 }

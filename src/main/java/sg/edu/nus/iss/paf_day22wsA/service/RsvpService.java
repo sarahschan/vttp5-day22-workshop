@@ -57,4 +57,20 @@ public class RsvpService {
 
         rsvpRepo.insertOrUpdateRsvp(rsvpJson);
     }
+
+
+    public boolean rsvpExists(String email) {
+        
+        Optional<Rsvp> foundRsvp = searchByEmail(email);
+
+        if (foundRsvp.isEmpty()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public void editExistingRsvp(String existingEmail, Rsvp rsvp){
+        rsvpRepo.editExistingRsvp(existingEmail, rsvp);
+    }
 }
