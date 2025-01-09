@@ -27,6 +27,13 @@ public class Rsvp {
         return rsvp;
     }
 
+    
+    @Override
+    public String toString() {
+        return "Rsvp [name=" + name + ", email=" + email + ", phone=" + phone + ", confirmationDate=" + confirmationDate
+                + ", comments=" + comments + "]";
+    }
+
 
     public String getName() {
         return name;

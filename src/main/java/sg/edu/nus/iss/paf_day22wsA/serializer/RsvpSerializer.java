@@ -12,10 +12,11 @@ public class RsvpSerializer {
     public JsonObject toRsvpJsonObject(Rsvp rsvp){
         
         JsonObject rsvpJsonObject = Json.createObjectBuilder()
+            .add("name", rsvp.getName())
             .add("email", rsvp.getEmail())
             .add("phone", rsvp.getPhone())
             .add("confirmDate", rsvp.getConfirmationDate())
-            .add("comments", rsvp.getComments())
+            .add("comments", rsvp.getComments() != null ? rsvp.getComments() : "")
             .build();
 
         return rsvpJsonObject;

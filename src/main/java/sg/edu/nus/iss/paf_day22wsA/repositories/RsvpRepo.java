@@ -33,7 +33,6 @@ public class RsvpRepo {
     }
 
 
-
     public List<Rsvp> getRsvps(int limit){
         
         SqlRowSet rs = template.queryForRowSet(Queries.SQL_RETRIEVE_ALL_RSVPS_LIMIT, limit);
@@ -49,22 +48,28 @@ public class RsvpRepo {
     }
 
 
-
-    public Optional<List<Rsvp>> searchByEmail(String query) {
+    public Optional<Rsvp> searchByName(String name) {
         
-        SqlRowSet rs = template.queryForRowSet(Queries.SQL_SEARCH_BY_EMAIL, "%%%s%%".formatted(query));
+        System.out.println("searching for " + name);
 
-        List<Rsvp> rsvps = new LinkedList<>();
+        SqlRowSet rs = template.queryForRowSet(Queries.SQL_SEARCH_BY_NAME, "%%%s%%".formatted(name));
 
-        while (rs.next()){
-            rsvps.add(Rsvp.toRsvp(rs));
-        }
-
-        if (rsvps.isEmpty()) {
+        if (!rs.next()){    // No rsvp found
             return Optional.empty();
+        
+        } else {
+            return Optional.of(Rsvp.toRsvp(rs));
         }
 
-        return Optional.of(rsvps);
+    }
 
+
+    public void insertOrUpdateRsvp(Rsvp rsvp){
+        template.update(Queries.SQL_INSERT_OR_UPDATE,
+                        rsvp.getName(),
+                        rsvp.getEmail(),
+                        rsvp.getPhone(),
+                        rsvp.getConfirmationDate(),
+                        rsvp.getComments());
     }
 }

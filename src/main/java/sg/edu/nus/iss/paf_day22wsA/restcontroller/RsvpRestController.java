@@ -1,15 +1,17 @@
 package sg.edu.nus.iss.paf_day22wsA.restcontroller;
 
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import sg.edu.nus.iss.paf_day22wsA.model.Rsvp;
 import sg.edu.nus.iss.paf_day22wsA.serializer.RsvpSerializer;
 import sg.edu.nus.iss.paf_day22wsA.service.RsvpService;
@@ -63,31 +66,39 @@ public class RsvpRestController {
 
 
     @GetMapping(path = "/rsvp", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> searchByEmail(@RequestParam(name = "q") String query){
+    public ResponseEntity<String> searchByName(@RequestParam(name = "q") String name){
 
         HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", "application/json");
         
 
-        Optional<List<Rsvp>> rsvpsOpt = rsvpService.searchByEmail(query);
+        Optional<Rsvp> rsvpOpt = rsvpService.searchByName(name);
 
-        if (rsvpsOpt.isEmpty()){
+        if (rsvpOpt.isEmpty()){         // No rsvp found
             JsonObject error = Json.createObjectBuilder()
-                .add("error", "No RSVP records found for query: " + query)
+                .add("error", "No RSVP records found for query: " + name)
                 .build();
 
             return ResponseEntity.status(404).headers(headers).body(error.toString());
         }
-        
-        List<Rsvp> rsvps = rsvpsOpt.get();
-        JsonArrayBuilder rsvpsArrayBuilder = Json.createArrayBuilder();
 
-        for (Rsvp rsvp : rsvps){
-            JsonObject rsvpJsonObject = rsvpSerializer.toRsvpJsonObject(rsvp);
-            rsvpsArrayBuilder.add(rsvpJsonObject);
-        }
+        Rsvp rsvp = rsvpOpt.get();      // Rsvp found
+        System.out.println(rsvp);
+        JsonObject rsvpJson = rsvpSerializer.toRsvpJsonObject(rsvp);
 
-        return ResponseEntity.status(200).headers(headers).body(rsvpsArrayBuilder.build().toString());
+        return ResponseEntity.status(200).headers(headers).body(rsvpJson.toString());
 
     }
+
+
+    @PostMapping(path = "/rsvp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addNewRsvp(@RequestBody String formEntry){
+
+        JsonReader jsonReader = Json.createReader(new StringReader(formEntry));
+        JsonObject rsvpJson = jsonReader.readObject();
+
+
+        return null;
+    }
+
 }
