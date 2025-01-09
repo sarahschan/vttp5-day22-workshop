@@ -83,4 +83,12 @@ public class RsvpRepo {
                         rsvp.getConfirmationDate(),
                         rsvp.getComments().isEmpty() ? null : rsvp.getComments());
     }
+
+
+    public int countRsvps(){
+        
+        int count = template.queryForObject(Queries.SQL_COUNT_RSVPS, Integer.class);
+
+        return count;
+    }
 }

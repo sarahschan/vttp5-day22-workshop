@@ -168,4 +168,28 @@ public class RsvpRestController {
     }
 
 
+    @GetMapping(path = "/rsvps/count", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> countRsvps(){
+
+        try {
+            
+            int count = rsvpService.countRsvps();
+
+            JsonObject countMessage = Json.createObjectBuilder()
+                                        .add("rsvpCount", String.valueOf(count))
+                                        .build();
+
+            return ResponseEntity.status(200).body(countMessage.toString());
+
+        } catch (Exception e) {
+
+            System.out.println(e.getCause() + ": " + e.getStackTrace());
+
+            JsonObject errorMessage = Json.createObjectBuilder()
+                                        .add("errorMsg", "Error during retrieval of count")
+                                        .build();
+            
+            return ResponseEntity.status(500).body(errorMessage.toString());
+        }
+    }
 }

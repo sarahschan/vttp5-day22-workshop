@@ -70,7 +70,13 @@ public class RsvpService {
         return true;
     }
 
+
     public void editExistingRsvp(String existingEmail, Rsvp rsvp){
         rsvpRepo.editExistingRsvp(existingEmail, rsvp);
+    }
+
+
+    public int countRsvps(){
+        return rsvpRepo.countRsvps();
     }
 }

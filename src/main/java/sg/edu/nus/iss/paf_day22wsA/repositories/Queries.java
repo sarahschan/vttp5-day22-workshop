@@ -40,4 +40,10 @@ public class Queries {
             delete from rsvp
                 where email = ?    
         """;
+
+
+    public static final String SQL_COUNT_RSVPS = 
+        """
+            select count(*) as count from rsvp    
+        """;
 }
